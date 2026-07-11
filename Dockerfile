@@ -1,18 +1,16 @@
-﻿# Start from an official slim Python image
-FROM python:3.11-slim
+﻿FROM python:3.11-slim
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Install dependencies first (this layer caches, so rebuilds are fast)
+# Install the CPU-only build of torch first (avoids ~2GB of unused CUDA/GPU libs)
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+
+# Then install the rest of the dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code into the container
 COPY app/ ./app/
 
-# Document the port the app listens on
 EXPOSE 8000
 
-# The command that runs when the container starts
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

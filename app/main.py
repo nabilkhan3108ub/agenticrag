@@ -1,9 +1,14 @@
 ﻿from fastapi import FastAPI
 from pydantic import BaseModel
+from prometheus_fastapi_instrumentator import Instrumentator
 from app.rag import RAG
 
 app = FastAPI(title="AgenticRAG API")
 rag = RAG()
+
+# Expose Prometheus metrics at /metrics. This one line auto-tracks request
+# counts, latencies, and status codes for every endpoint.
+Instrumentator().instrument(app).expose(app)
 
 
 class Query(BaseModel):

@@ -6,3 +6,4 @@ psycopg[binary]
 pgvector
 fastapi
 uvicorn[standard]
+prometheus-fastapi-instrumentator
