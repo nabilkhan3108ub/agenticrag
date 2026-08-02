@@ -1,0 +1,38 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agenticrag-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agenticrag-app
+  template:
+    metadata:
+      labels:
+        app: agenticrag-app
+    spec:
+      containers:
+        - name: agenticrag-app
+          image: agenticrag-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: agenticrag-config
+            - secretRef:
+                name: agenticrag-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agenticrag-app
+spec:
+  type: NodePort
+  selector:
+    app: agenticrag-app
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30080
